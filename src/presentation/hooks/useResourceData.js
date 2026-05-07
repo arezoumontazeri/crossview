@@ -118,13 +118,24 @@ export const useResourceData = (resource) => {
       full.spec.writeConnectionSecretsTo.forEach(r => add('Secret', r, r.namespace || original?.namespace));
     }
 
-    const parentNs = full.spec?.claimRef?.namespace || full.spec?.crossplane?.claimRef?.namespace || full.metadata?.namespace || original?.namespace || null;
+    const xrNamespace = full.metadata?.namespace || original?.namespace || null;
+    const claimNs = full.spec?.claimRef?.namespace || full.spec?.crossplane?.claimRef?.namespace || null;
+    const nativeK8sKinds = ['Deployment','Service','Pod','ConfigMap','Secret','ReplicaSet','StatefulSet','DaemonSet'];
 
     const resourceRefs = full.spec?.resourceRefs || full.spec?.crossplane?.resourceRefs;
     if (resourceRefs?.length) {
       resourceRefs.forEach(ref => {
-        let ns = ref.namespace || (['Deployment','Service','Pod','ConfigMap','Secret','ReplicaSet','StatefulSet','DaemonSet'].includes(ref.kind) ? parentNs : null);
-        add('Managed Resource', ref, ns);
+        let ns = ref.namespace;
+        if (!ns) {
+          if (xrNamespace) {
+            // v2 namespaced XR: managed resources live in the XR's namespace
+            ns = xrNamespace;
+          } else if (claimNs && nativeK8sKinds.includes(ref.kind)) {
+            // v1 cluster-scoped XR: only k8s native kinds inherit the claim namespace
+            ns = claimNs;
+          }
+        }
+        add('Managed Resource', ref, ns || null);
       });
     }
 
