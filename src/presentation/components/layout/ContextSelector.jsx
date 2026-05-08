@@ -2,19 +2,13 @@ import {
   Box,
   Text,
   HStack,
-  Icon,
 } from '@chakra-ui/react';
-import { FiAlertCircle } from 'react-icons/fi';
 import { useAppContext } from '../../providers/AppProvider.jsx';
 import { Dropdown } from '../common/Dropdown.jsx';
 import { getBackgroundColor, getTextColor } from '../../utils/theme.js';
 
 export const ContextSelector = () => {
-  const { contexts, selectedContext, setSelectedContext, contextErrors, colorMode } = useAppContext();
-
-  const handleSelect = async (contextName) => {
-    await setSelectedContext(contextName);
-  };
+  const { contexts, selectedContext, setSelectedContext, colorMode } = useAppContext();
 
   if (contexts.length === 0) {
     return (
@@ -35,7 +29,7 @@ export const ContextSelector = () => {
   const contextName = typeof selectedContext === 'string' ? selectedContext : selectedContext?.name || selectedContext;
   const options = contexts.map(context => {
     const name = typeof context === 'string' ? context : context.name || context;
-    const hasError = contextErrors[name];
+    const hasError = false;
     return { 
       value: name, 
       label: name,
@@ -48,7 +42,7 @@ export const ContextSelector = () => {
         w="100%"
       placeholder="Select context"
       value={contextName}
-      onChange={handleSelect}
+      onChange={setSelectedContext}
       options={options}
     />
   );
