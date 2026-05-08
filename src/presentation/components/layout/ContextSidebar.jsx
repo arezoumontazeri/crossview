@@ -11,16 +11,12 @@ import { useAppContext } from '../../providers/AppProvider.jsx';
 import { getBorderColor, getBackgroundColor, getTextColor, getAccentColor, getStatusColor } from '../../utils/theme.js';
 
 export const ContextSidebar = () => {
-  const { contexts, selectedContext, setSelectedContext, contextErrors, colorMode, isInClusterMode } = useAppContext();
+  const { contexts, selectedContext, setSelectedContext, colorMode, isInClusterMode } = useAppContext();
   const navigate = useNavigate();
 
   if (isInClusterMode) {
     return null;
   }
-
-  const handleContextClick = async (contextName) => {
-    await setSelectedContext(contextName);
-  };
 
   const getFirstLetter = (name) => {
     if (!name) return '?';
@@ -76,12 +72,12 @@ export const ContextSidebar = () => {
             {contexts.map((context) => {
               const name = typeof context === 'string' ? context : context.name || context;
               const isSelected = contextName === name;
-              const hasError = contextErrors[name];
+              const hasError = false;
               return (
                 <Box
                   key={name}
                   as="button"
-                  onClick={() => handleContextClick(name)}
+                  onClick={() => setSelectedContext(name)}
                   w="100%"
                   p={0}
                   borderRadius="lg"

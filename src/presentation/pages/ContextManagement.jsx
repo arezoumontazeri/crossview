@@ -15,7 +15,7 @@ import { Dialog } from '../components/common/Dialog.jsx';
 import { useAppContext } from '../providers/AppProvider.jsx';
 
 export const ContextManagement = () => {
-  const { contexts, kubernetesRepository, getKubernetesContextsUseCase, selectedContext, contextErrors, colorMode } = useAppContext();
+  const { contexts, kubernetesRepository, getKubernetesContextsUseCase, selectedContext, colorMode } = useAppContext();
   const [kubeConfigText, setKubeConfigText] = useState('');
   const [loading, setLoading] = useState(false);
   const [deletingContext, setDeletingContext] = useState(null);
@@ -199,7 +199,7 @@ export const ContextManagement = () => {
               {contexts.map((contextName) => {
                 const name = typeof contextName === 'string' ? contextName : contextName?.name || contextName;
                 const isSelected = selectedContext === name;
-                const hasError = contextErrors[name];
+                const hasError = false;
                 const getFirstLetter = (n) => n ? n.charAt(0).toUpperCase() : '?';
                 
                 return (

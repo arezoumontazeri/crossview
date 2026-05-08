@@ -69,13 +69,18 @@ func buildManagedResourceTargetsFromMRDs(mrdList []map[string]interface{}) []man
 func appendOptionalManagedResourceTargets(resourceTargets []managedResourceTarget) []managedResourceTarget {
 	return append(resourceTargets,
 		managedResourceTarget{apiVersion: "pkg.crossplane.io/v1", kind: "ManagedResourceDefinition", plural: "managedresourcedefinitions"},
+		managedResourceTarget{apiVersion: "pkg.crossplane.io/v1beta1", kind: "ManagedResourceDefinition", plural: "managedresourcedefinitions"},
+		managedResourceTarget{apiVersion: "pkg.crossplane.io/v1alpha1", kind: "ManagedResourceDefinition", plural: "managedresourcedefinitions"},
 		managedResourceTarget{apiVersion: "pkg.crossplane.io/v1", kind: "ManagedResourceActivationPolicy", plural: "managedresourceactivationpolicies"},
+		managedResourceTarget{apiVersion: "pkg.crossplane.io/v1beta1", kind: "ManagedResourceActivationPolicy", plural: "managedresourceactivationpolicies"},
+		managedResourceTarget{apiVersion: "pkg.crossplane.io/v1alpha1", kind: "ManagedResourceActivationPolicy", plural: "managedresourceactivationpolicies"},
 	)
 }
 
 func dedupeManagedResources(items []interface{}) []interface{} {
 	allResources := make([]interface{}, 0, len(items))
 	seenUIDs := make(map[string]struct{}, len(items))
+	seenFallbackKeys := make(map[string]struct{}, len(items))
 
 	for _, item := range items {
 		itemMap, ok := item.(map[string]interface{})
@@ -94,6 +99,15 @@ func dedupeManagedResources(items []interface{}) []interface{} {
 				continue
 			}
 			seenUIDs[uid] = struct{}{}
+		} else {
+			// Use name/namespace as fallback key when no UID
+			name, _ := metadata["name"].(string)
+			namespace, _ := metadata["namespace"].(string)
+			fallbackKey := fmt.Sprintf("%s/%s", namespace, name)
+			if _, seen := seenFallbackKeys[fallbackKey]; seen {
+				continue
+			}
+			seenFallbackKeys[fallbackKey] = struct{}{}
 		}
 
 		allResources = append(allResources, itemMap)
