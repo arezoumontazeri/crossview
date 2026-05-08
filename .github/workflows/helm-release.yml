@@ -101,7 +101,9 @@ jobs:
 
       - name: Install Helm unittest plugin
         run: |
-          helm plugin install https://github.com/quintush/helm-unittest.git || true
+          helm plugin install https://github.com/helm-unittest/helm-unittest --version v0.6.0
+          helm plugin list
+          test -x "$(helm env HELM_PLUGINS)/helm-unittest/untt"
 
       - name: Run Helm Tests
         run: |
