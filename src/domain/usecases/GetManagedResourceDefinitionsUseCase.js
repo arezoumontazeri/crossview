@@ -5,12 +5,11 @@ export class GetManagedResourceDefinitionsUseCase {
 
   async execute(context = null) {
     try {
-      const managedResourcesResult = await this.kubernetesRepository.getManagedResources(context);
-      const allResources = managedResourcesResult.items || [];
-      
-      const mrds = allResources.filter(item => item.kind === 'ManagedResourceDefinition');
+      const apiVersion = 'apiextensions.crossplane.io/v1alpha1';
+      const kind = 'ManagedResourceDefinition';
+      const mrdsResult = await this.kubernetesRepository.getResources(apiVersion, kind, null, context);
+      const mrds = mrdsResult.items || mrdsResult; // Support both new format and legacy array format
       const mrdsArray = Array.isArray(mrds) ? mrds : [];
-      
       return mrdsArray.map(mrd => {
         const conditions = mrd.status?.conditions || [];
         const establishedCondition = conditions.find(c => c.type === 'Established');
