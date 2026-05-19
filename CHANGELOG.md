@@ -1,20 +1,18 @@
-# [3.9.0](https://github.com/crossplane-contrib/crossview/compare/v3.8.0...v3.9.0) (2026-04-13)
+# [4.4.0](https://github.com/crossplane-contrib/crossview/compare/v3.9.0...v4.4.0) (2026-05-19)
 
 
 ### Bug Fixes
 
-* fix Crossplane v2 composite resource managed resource relation visualization ([f8cc7b1](https://github.com/crossplane-contrib/crossview/commit/f8cc7b15a861a247952f903773059aef303836d1))
-* **ci:** enforce semantic versioning validation in release workflows ([ec011e5](https://github.com/crossplane-contrib/crossview/commit/ec011e52bb877a5e138daa0be6d52f0702890048))
-* **version-check:** compare prerelease versions correctly and pick highest release ([1855c65](https://github.com/crossplane-contrib/crossview/commit/1855c65bccadc840fd53e36bb59625f5485f60e1))
+* **ci:** make helm-unittest plugin install deterministic ([01bad86](https://github.com/crossplane-contrib/crossview/commit/01bad86825b05851e4c3af8dec0a64651f11da7f))
+* **cache:** fix caching and managed resource definition/policy readability ([3a7f9a6](https://github.com/crossplane-contrib/crossview/commit/3a7f9a69d7a3033b5425d20f60dba25cc7b105f2))
+* **ui:** pass namespace when navigating from namespaced XR to managed resources ([74892d6](https://github.com/crossplane-contrib/crossview/commit/74892d67232a9cf9f59ca070513d13279a185d90))
 
 
 ### Features
 
-* make releases manual with controlled trigger ([3f4ff29](https://github.com/crossplane-contrib/crossview/commit/3f4ff298b88fb5a529e8ead314eceb5e938e7dfa))
-* **ui:** add version display and update indicator to sidebar footer ([61408a8](https://github.com/crossplane-contrib/crossview/commit/61408a82e6c3fccc55c8c220f6825106db6f6233))
-* **ui:** support deep links for composite kind details ([4759e5a](https://github.com/crossplane-contrib/crossview/commit/4759e5a77a81e32474824109f784b49b474685a7))
+* **resource-relations:** modularize graph UI, refine health/navigation behavior, and improve relation rendering ([8eda498](https://github.com/crossplane-contrib/crossview/commit/8eda498514436ab651d96a7005c5fc92b1d86c46))
 
 
 ### Other
 
-* update GitHub issue templates ([ef268bd](https://github.com/crossplane-contrib/crossview/commit/ef268bdbd54df3037d38a0a79a0f5989696cd98e))
+* clean up unused code and improve error handling in optimized context switching flow ([339944b](https://github.com/crossplane-contrib/crossview/commit/339944b585e1796268639035db7a3c9525ab3156))
