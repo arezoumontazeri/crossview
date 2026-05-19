@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"crossview-go-server/lib"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -36,19 +37,23 @@ func (k *KubernetesService) GetResources(apiVersion, kind, namespace, contextNam
 		return nil, fmt.Errorf("apiVersion is required")
 	}
 
-	apiVersionParts := strings.Split(apiVersion, "/")
-	if len(apiVersionParts) != 2 {
-		return nil, fmt.Errorf("invalid apiVersion format: %s, expected group/version", apiVersion)
-	}
-
-	group := strings.TrimSpace(apiVersionParts[0])
-	version := strings.TrimSpace(apiVersionParts[1])
-
-	if group == "" {
-		return nil, fmt.Errorf("invalid apiVersion format: %s, group is required", apiVersion)
-	}
-	if version == "" {
-		return nil, fmt.Errorf("invalid apiVersion format: %s, version is required", apiVersion)
+	var group, version string
+	if apiVersion == "v1" {
+		group = ""
+		version = "v1"
+	} else {
+		apiVersionParts := strings.Split(apiVersion, "/")
+		if len(apiVersionParts) != 2 {
+			return nil, fmt.Errorf("invalid apiVersion format: %s, expected group/version or v1", apiVersion)
+		}
+		group = strings.TrimSpace(apiVersionParts[0])
+		version = strings.TrimSpace(apiVersionParts[1])
+		if group == "" {
+			return nil, fmt.Errorf("invalid apiVersion format: %s, group is required", apiVersion)
+		}
+		if version == "" {
+			return nil, fmt.Errorf("invalid apiVersion format: %s, version is required", apiVersion)
+		}
 	}
 
 	if plural == "" {

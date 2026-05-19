@@ -23,14 +23,12 @@ export const ResourceDetails = ({ resource, onClose, onNavigate, onBack }) => {
   const { addResource, removeResource, watchedResources } = useOnWatchResources();
   const [activeTab, setActiveTab] = useState('overview');
   
-  // Use the custom hook for resource data loading
   const { loading, fullResource, relatedResources, events, eventsLoading } = useResourceData(resource);
 
   const getResourceKey = (res) => {
     return `${res.apiVersion || ''}:${res.kind || ''}:${res.metadata?.namespace || ''}:${res.metadata?.name || ''}`;
   };
 
-  // Check if resource is watched - use both current resource and fullResource
   const currentResource = fullResource || resource;
   const resourceKey = currentResource ? getResourceKey(currentResource) : null;
   const watchedResource = resourceKey ? watchedResources.find(r => {
@@ -41,11 +39,9 @@ export const ResourceDetails = ({ resource, onClose, onNavigate, onBack }) => {
 
   const handleWatchToggle = () => {
     if (isWatched && watchedResource) {
-      // Unwatch the resource - use _key if available, otherwise calculate it
       const keyToRemove = watchedResource._key || getResourceKey(watchedResource);
       removeResource(keyToRemove);
     } else {
-      // Watch the resource
       const resourceToAdd = fullResource || resource;
       if (resourceToAdd) {
         const resourceWithPlural = {
@@ -60,14 +56,13 @@ export const ResourceDetails = ({ resource, onClose, onNavigate, onBack }) => {
   if (!resource) return null;
 
   const handleRelatedClick = (related) => {
-    // Ensure namespace is null (not "undefined" string) for cluster-scoped resources
     const namespace = related.namespace && related.namespace !== 'undefined' && related.namespace !== 'null' ? related.namespace : null;
     onNavigate({
       apiVersion: related.apiVersion,
       kind: related.kind,
       name: related.name,
       namespace: namespace,
-      plural: related.plural || null, // Include plural if available
+      plural: related.plural || null,
     });
   };
 
@@ -157,7 +152,6 @@ export const ResourceDetails = ({ resource, onClose, onNavigate, onBack }) => {
           </Box>
         ) : (
           <Box display="flex" flexDirection="column">
-            {/* Tabs Navigation */}
             <Box px={4} pt={4} flexShrink={0}>
               <ResourceTabs
                 activeTab={activeTab}
@@ -189,7 +183,6 @@ export const ResourceDetails = ({ resource, onClose, onNavigate, onBack }) => {
               />
             </Box>
 
-            {/* Tab Content */}
             <Box flex={1} minH={0}>
               {activeTab === 'overview' && (
                 <ResourceOverview
@@ -208,9 +201,10 @@ export const ResourceDetails = ({ resource, onClose, onNavigate, onBack }) => {
 
               {activeTab === 'relations' && (
                 <ResourceRelations 
-                  resource={resource} 
+                  resource={fullResource || resource} 
                   relatedResources={relatedResources} 
-                  colorMode={colorMode} 
+                  colorMode={colorMode}
+                  onNavigate={handleRelatedClick}
                 />
               )}
             </Box>
