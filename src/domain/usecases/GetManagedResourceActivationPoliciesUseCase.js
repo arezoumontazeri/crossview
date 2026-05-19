@@ -10,7 +10,6 @@ export class GetManagedResourceActivationPoliciesUseCase {
       const mrapsResult = await this.kubernetesRepository.getResources(apiVersion, kind, null, context);
       const mraps = mrapsResult.items || mrapsResult; // Support both new format and legacy array format
       const mrapsArray = Array.isArray(mraps) ? mraps : [];
-      
       return mrapsArray.map(mrap => ({
         name: mrap.metadata?.name || 'unknown',
         namespace: mrap.metadata?.namespace || null,

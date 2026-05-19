@@ -38,7 +38,9 @@ export const useResourceData = (resource) => {
           }
 
           const related = extractRelations(full, resource);
-          setRelatedResources(related);
+          const resourceIndex = await loadRelatedResourceIndex(related, contextName);
+          const hydratedRelated = hydrateRelatedResources(related, resourceIndex);
+          setRelatedResources(hydratedRelated);
           await loadEvents(full, resource, contextName);
         }
       } catch (error) {
@@ -77,6 +79,87 @@ export const useResourceData = (resource) => {
         ownerReferences: full.metadata.ownerReferences || original.metadata?.ownerReferences || []
       };
     }
+  };
+
+  const loadRelatedResourceIndex = async (related, contextName) => {
+    const index = new Map();
+
+    if (!Array.isArray(related) || related.length === 0) {
+      return index;
+    }
+
+    const relationTypes = new Set();
+    related.forEach((rel) => {
+      if (rel?.apiVersion && rel.apiVersion !== 'unknown' && rel?.kind) {
+        relationTypes.add(`${rel.apiVersion}|${rel.kind}`);
+      }
+    });
+
+    if (relationTypes.size === 0) {
+      return index;
+    }
+
+    const jobs = Array.from(relationTypes).map(async (typeKey) => {
+      const [apiVersion, kind] = typeKey.split('|');
+      try {
+        const result = await kubernetesRepository.getResources(apiVersion, kind, null, contextName, null, null, null);
+        const items = Array.isArray(result?.items) ? result.items : Array.isArray(result) ? result : [];
+
+        items.forEach((item) => {
+          const itemApiVersion = item?.apiVersion || apiVersion;
+          const itemKind = item?.kind || kind;
+          const itemName = item?.metadata?.name || item?.name;
+          const itemNamespace = item?.metadata?.namespace || item?.namespace || null;
+
+          if (!itemApiVersion || !itemKind || !itemName) return;
+
+          const exactKey = buildResourceKey(itemApiVersion, itemKind, itemName, itemNamespace);
+          const clusterKey = buildResourceKey(itemApiVersion, itemKind, itemName, null);
+          const looseKey = `${itemKind}|${itemName}|${itemNamespace || 'cluster'}`;
+
+          index.set(exactKey, item);
+          if (!index.has(clusterKey)) index.set(clusterKey, item);
+          if (!index.has(looseKey)) index.set(looseKey, item);
+        });
+      } catch (error) {
+        console.warn(`[useResourceData] Failed to load related type ${apiVersion}/${kind}:`, error.message);
+      }
+    });
+
+    await Promise.all(jobs);
+    return index;
+  };
+
+  const buildResourceKey = (apiVersion, kind, name, namespace = null) => {
+    const ns = namespace || null;
+    return `${apiVersion || 'unknown'}|${kind || 'unknown'}|${name || 'unknown'}|${ns || 'cluster'}`;
+  };
+
+  const hydrateRelatedResources = (related, resourceIndex) => {
+    if (!Array.isArray(related) || related.length === 0 || !(resourceIndex instanceof Map) || resourceIndex.size === 0) {
+      return related;
+    }
+
+    return related.map((rel) => {
+      if (!rel?.apiVersion || rel.apiVersion === 'unknown' || !rel.kind || !rel.name) {
+        return rel;
+      }
+
+      const namespacedKey = buildResourceKey(rel.apiVersion, rel.kind, rel.name, rel.namespace || null);
+      const clusterKey = buildResourceKey(rel.apiVersion, rel.kind, rel.name, null);
+      const looseKey = `${rel.kind}|${rel.name}|${rel.namespace || 'cluster'}`;
+      const fullRelated = resourceIndex.get(namespacedKey) || resourceIndex.get(clusterKey) || resourceIndex.get(looseKey);
+
+      if (!fullRelated) {
+        return rel;
+      }
+
+      return {
+        ...rel,
+        status: fullRelated.status || rel.status,
+        conditions: fullRelated.status?.conditions || fullRelated.conditions || rel.conditions || [],
+      };
+    });
   };
 
   const extractRelations = (full, original) => {
@@ -118,13 +201,24 @@ export const useResourceData = (resource) => {
       full.spec.writeConnectionSecretsTo.forEach(r => add('Secret', r, r.namespace || original?.namespace));
     }
 
-    const parentNs = full.spec?.claimRef?.namespace || full.spec?.crossplane?.claimRef?.namespace || full.metadata?.namespace || original?.namespace || null;
+    const xrNamespace = full.metadata?.namespace || original?.namespace || null;
+    const claimNs = full.spec?.claimRef?.namespace || full.spec?.crossplane?.claimRef?.namespace || null;
+    const nativeK8sKinds = ['Deployment','Service','Pod','ConfigMap','Secret','ReplicaSet','StatefulSet','DaemonSet'];
 
     const resourceRefs = full.spec?.resourceRefs || full.spec?.crossplane?.resourceRefs;
     if (resourceRefs?.length) {
       resourceRefs.forEach(ref => {
-        let ns = ref.namespace || (['Deployment','Service','Pod','ConfigMap','Secret','ReplicaSet','StatefulSet','DaemonSet'].includes(ref.kind) ? parentNs : null);
-        add('Managed Resource', ref, ns);
+        let ns = ref.namespace;
+        if (!ns) {
+          if (xrNamespace) {
+            // v2 namespaced XR: managed resources live in the XR's namespace
+            ns = xrNamespace;
+          } else if (claimNs && nativeK8sKinds.includes(ref.kind)) {
+            // v1 cluster-scoped XR: only k8s native kinds inherit the claim namespace
+            ns = claimNs;
+          }
+        }
+        add('Managed Resource', ref, ns || null);
       });
     }
 

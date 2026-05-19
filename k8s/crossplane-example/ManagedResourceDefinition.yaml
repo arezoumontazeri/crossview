@@ -1,0 +1,15 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: ManagedResourceDefinition
+metadata:
+  name: example-mrd
+spec:
+  group: example.crossplane.io
+  names:
+    kind: ExampleResource
+    plural: exampleresources
+    singular: exampleresource
+  scope: Cluster
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true

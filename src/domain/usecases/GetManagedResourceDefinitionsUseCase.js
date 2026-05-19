@@ -10,7 +10,6 @@ export class GetManagedResourceDefinitionsUseCase {
       const mrdsResult = await this.kubernetesRepository.getResources(apiVersion, kind, null, context);
       const mrds = mrdsResult.items || mrdsResult; // Support both new format and legacy array format
       const mrdsArray = Array.isArray(mrds) ? mrds : [];
-      
       return mrdsArray.map(mrd => {
         const conditions = mrd.status?.conditions || [];
         const establishedCondition = conditions.find(c => c.type === 'Established');
