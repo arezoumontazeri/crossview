@@ -4,69 +4,65 @@ This roadmap outlines the planned direction for **CrossView**, the open-source d
 
 We welcome contributions, discussions, and new ideas via GitHub Issues, Discussions, or Pull Requests!
 
-## Current Status (as of February 2026)
-- Stable core features: real-time resource watching, interactive relationship graphs, multi-cluster support, detailed resource views, OIDC/SAML SSO, Helm chart deployment
-- Latest release: v3.5.0 (February 2026)
+## Current Status (as of June 2026)
+
+- Stable core features: real-time resource watching, interactive relationship graphs, **partial multi-cluster support** (full support when running outside Kubernetes via kubeconfig; limited to single cluster when deployed inside via Helm/service account), detailed resource views, OIDC/SAML SSO, Helm chart deployment
+- Latest release: v4.0.0 (June 2026)
 - Actively maintained with frequent updates
 
-## Short-term (Next 3–6 months) – v3.6 – v4.x
-Focus: Security hardening, usability improvements, and production readiness
+## Short-term (Next 3–6 months) – v4.x
+**Focus:** Security hardening, real-time experience, usability, and ecosystem integrations
 
 - **Fine-grained RBAC permissions**  
   Implement Kubernetes-native authorization checks (via SubjectAccessReview API) so users only see/edit resources they are allowed to access. Support Crossplane-specific verbs (e.g., view compositions, approve claims).
 
-- **Customizable dashboard**  
-  Allow users to create personalized views: rearrange widgets, pin favorite resources/clusters, create custom filters/queries, and save dashboard layouts per user or team.
-
-- **Automatic user role sync from Identity Provider (IDP) when SSO is enabled**  
-  When using OIDC/SAML, automatically map IDP groups/roles/claims to CrossView permissions or Kubernetes RBAC bindings. Support common providers (Keycloak, Okta, Auth0, Azure AD) with configurable mapping rules.
+- **Improved resource watching**  
+  Significantly enhance real-time watching: better performance on large clusters, smarter event filtering, improved reconnection logic, and reduced latency.
 
 - **Improved search and filtering**  
-  Advanced full-text search across all resource fields, saved searches, and quick filters (e.g., by status, provider, composition name).
+  Advanced full-text search across all resource fields, saved searches, quick filters (by status, provider, composition, cluster), and cross-cluster search.
 
 - **Events & audit log viewer**  
-  Dedicated tab for browsing Kubernetes events and Crossplane reconciliation events with filtering, timestamps, and correlation to resources.
+  Dedicated tab for browsing Kubernetes events and Crossplane reconciliation events with filtering, timestamps, and direct correlation to resources.
 
-- **Dark mode refinements & accessibility improvements**  
-  Full WCAG compliance checks, keyboard navigation, screen reader support.
+- **Full multi-cluster support (in-cluster)**  
+  Enable true multi-cluster management when CrossView is deployed inside Kubernetes (via Helm). Support loading multiple kubeconfigs, using external cluster credentials/secrets, unified views, easy context switching, and cluster grouping — removing the current limitation of single-cluster service-account access.
+
+- **Native Headlamp Plugin**  
+  Develop a native Headlamp plugin (see [crossview-headlamp](https://github.com/MoeidHeidari/crossview-headlamp)) that integrates the CrossView UI into Headlamp while using **CrossView’s own backend**. The plugin will connect to the CrossView backend service instead of relying on Headlamp’s backend, providing a seamless experience within Headlamp’s interface while leveraging CrossView’s full capabilities (real-time watching, graphs, etc.).
 
 ## Medium-term (6–12 months) – v4.x – v5.x
-Focus: Deeper Crossplane integration, observability, and extensibility
+**Focus:** Deeper Crossplane integration, visibility, and GitOps alignment
 
-- **Composition & claim workflow enhancements**  
-  Visual editor for creating/editing Compositions and Claims (with YAML preview and validation), dry-run previews, and one-click apply.
+- **Resource diff & history viewer (YAML support)**  
+  Side-by-side and unified YAML diff, generation-based history, change attribution, and drift visualization.
 
-- **Provider & managed resource health dashboard**  
-  Aggregated health overview per provider (e.g., AWS, GCP, Azure), showing unhealthy resources, drift detection alerts, and quick actions.
+- **GitOps integration**  
+  Show Git commit links for managed resources and claims via annotations. Basic drift detection against Git source.
 
-- **Multi-tenancy & team workspaces**  
-  Namespace/project-based isolation, team-specific dashboards, and resource quotas visibility.
+- **Full Flux/Argo CD deep integration**  
+  Deep support for Flux and Argo CD: reconciliation status, sync state, Git repository linking, and visual indicators for drift or sync failures.
 
-- **Alerting & notifications**  
-  Integrate with common tools (Slack, PagerDuty, email) for critical events (e.g., reconciliation failures, resource deletion, composition drift).
+- **Full resource map / relationship graph improvements**  
+  Enhanced interactive resource map showing full dependency graphs across clusters, with better filtering and navigation.
 
-- **Resource diff & history viewer**  
-  Show changes over time (generation diffs), previous states, and who/what triggered updates.
-
-- **CLI companion tool**  
-  Lightweight `crossview` CLI for quick resource lookups, context switching, and dashboard URL generation.
+- **Analytics page**  
+  Overview dashboard with usage statistics, resource distribution, health trends, and Crossplane adoption metrics across clusters.
 
 ## Long-term (12+ months) – v5.x+
-Focus: Ecosystem leadership and advanced features
+**Focus:** Advanced capabilities and ecosystem leadership
 
 - **Crossplane-native plugin system**  
   Allow community extensions (custom widgets, resource renderers, actions) via WebAssembly or simple JS plugins.
 
 - **Cost & usage insights**  
-  Integrate with provider-specific cost APIs (where available) to show estimated costs per composition/claim.
-
-- **GitOps integration**  
-  Show Git commit links for managed resources (via annotations), drift detection against Git source.
+  Integrate with provider-specific cost APIs to show estimated costs per composition/claim.
 
 - **AI-assisted troubleshooting**  
   Natural language query support and suggested fixes (optional opt-in, using local or user-provided LLM).
 
 ## How to Influence the Roadmap
+
 - Open a GitHub Issue or Discussion for feature requests
 - Upvote existing issues to show demand
 - Contribute code, tests, docs, or design feedback
