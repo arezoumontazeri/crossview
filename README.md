@@ -61,7 +61,7 @@
 
 - Node.js 20+ (for frontend development)
 - Go 1.24+ (for backend server)
-- PostgreSQL database (port 8920 by default, or set via `DB_PORT` env var)
+- PostgreSQL database — only required when using `auth_mode: session` (the default). For local development without a database, set `auth_mode: none` in `config/config.yaml` (see `config/examples/config-none.yaml.example`).
 - Kubernetes config file at `~/.kube/config` (or set `KUBECONFIG` env var)
 
 ### Install Dependencies

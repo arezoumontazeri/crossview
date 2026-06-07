@@ -69,6 +69,8 @@ docker run -p 3001:3001 \
   ghcr.io/crossplane-contrib/crossview:latest
 ```
 
+> **Note:** PostgreSQL is only required when using `auth_mode: session` (the default). For local development without a database, copy `config/examples/config-none.yaml.example` to `config/config.yaml` — the backend will skip the database connection entirely.
+
 ## First Steps After Installation
 
 1. **Access the Dashboard**
