@@ -9,6 +9,7 @@ import {
 import { FiExternalLink, FiClock, FiTag, FiLayers, FiSettings, FiInfo } from 'react-icons/fi';
 import { formatRelativeTime } from './resourceUtils.js';
 import { colors, getBorderColor } from '../../utils/theme.js';
+import { getResourceHealth, getHealthColor } from './ResourceRelations/utils.js';
 
 export const ResourceOverview = ({ fullResource, resource, relatedResources, onRelatedClick }) => {
   return (
@@ -999,6 +1000,13 @@ export const ResourceOverview = ({ fullResource, resource, relatedResources, onR
                   <HStack justify="space-between">
                     <VStack align="start" spacing={1}>
                       <HStack spacing={2}>
+                        <Box
+                          w="8px"
+                          h="8px"
+                          borderRadius="full"
+                          bg={getHealthColor(getResourceHealth(related))}
+                          flexShrink={0}
+                        />
                         <Text fontWeight="semibold" fontSize="sm" color="gray.700" _dark={{ color: 'gray.300' }}>{related.type}</Text>
                         <Badge fontSize="xs" colorScheme="blue">{related.kind}</Badge>
                       </HStack>
