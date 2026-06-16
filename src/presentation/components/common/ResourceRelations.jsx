@@ -112,13 +112,11 @@ export const ResourceRelations = ({ resource, relatedResources, colorMode, onNav
         },
       };
     });
-
     return [mainNode, ...relatedNodes];
   }, [resource, relatedResources, colorMode]);
 
   const initialEdges = useMemo(() => {
     if (!resource) return [];
-
     return initialNodes
       .filter((n) => n.id !== 'main-resource')
       .map((node, index) => ({
