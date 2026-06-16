@@ -73,9 +73,9 @@ export const ResourceRelations = ({ resource, relatedResources, colorMode, onNav
           label: (
             <Box px={3} py={2} textAlign="center">
               <Text fontWeight="bold" fontSize="sm" color={getTextColor(colorMode, 'primary')} noOfLines={1} mb={1}>
-                {related.kind || related.type}
+                {related.type || related.kind}
               </Text>
-              {related.type && (
+              {related.kind && (
                 <Badge
                   fontSize="xs"
                   colorScheme="blue"
@@ -87,7 +87,7 @@ export const ResourceRelations = ({ resource, relatedResources, colorMode, onNav
                   display="inline-block"
                   mb={1}
                 >
-                  {related.type}
+                  {related.kind}
                 </Badge>
               )}
               <Text fontSize="xs" color={getTextColor(colorMode, 'secondary')} noOfLines={1}>
@@ -112,13 +112,11 @@ export const ResourceRelations = ({ resource, relatedResources, colorMode, onNav
         },
       };
     });
-
     return [mainNode, ...relatedNodes];
   }, [resource, relatedResources, colorMode]);
 
   const initialEdges = useMemo(() => {
     if (!resource) return [];
-
     return initialNodes
       .filter((n) => n.id !== 'main-resource')
       .map((node, index) => ({
@@ -203,9 +201,9 @@ export const ResourceRelations = ({ resource, relatedResources, colorMode, onNav
             label: (
               <Box px={3} py={2} textAlign="center">
                 <Text fontWeight="bold" fontSize="sm" color={getTextColor(colorMode, 'primary')} noOfLines={1} mb={1}>
-                  {related.kind || related.type}
+                  {related.type || related.kind}
                 </Text>
-                {related.type && (
+                {related.kind && (
                   <Badge
                     fontSize="xs"
                     colorScheme="blue"
@@ -217,7 +215,7 @@ export const ResourceRelations = ({ resource, relatedResources, colorMode, onNav
                     display="inline-block"
                     mb={1}
                   >
-                    {related.type}
+                    {related.kind}
                   </Badge>
                 )}
                 <Text fontSize="xs" color={getTextColor(colorMode, 'secondary')} noOfLines={1}>
