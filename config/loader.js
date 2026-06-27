@@ -76,8 +76,7 @@ export const loadConfig = (configPath = null) => {
       enabled: process.env.SSO_ENABLED === 'true' || fileConfig.sso?.enabled === true,
       oidc: {
         enabled: process.env.OIDC_ENABLED === 'true' || fileConfig.sso?.oidc?.enabled === true,
-        // Default empty (mirrors the Go server): an unset issuer skips OIDC discovery so the
-        // explicit *URL endpoints are used as-is (split-horizon). See #280.
+        // Empty default, mirroring lib/sso_config.go (an unset issuer skips OIDC discovery). See #280.
         issuer: process.env.OIDC_ISSUER || fileConfig.sso?.oidc?.issuer || '',
         clientId: process.env.OIDC_CLIENT_ID || fileConfig.sso?.oidc?.clientId || 'crossview-client',
         clientSecret: process.env.OIDC_CLIENT_SECRET || fileConfig.sso?.oidc?.clientSecret || '',
