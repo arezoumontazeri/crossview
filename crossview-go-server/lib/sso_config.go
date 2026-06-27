@@ -66,13 +66,12 @@ func GetSSOConfig(env Env) SSOConfig {
 func getOIDCConfig(enabledStr string) OIDCConfig {
 	return OIDCConfig{
 		Enabled: enabledStr == "true",
-		// No fallback issuer: an empty issuer must stay empty so OIDC discovery is
-		// skipped and the explicit *URL endpoints are used as-is. This enables
-		// split-horizon setups (public authorization URL for the browser + in-cluster
-		// token/userinfo URLs). See https://github.com/crossplane-contrib/crossview/issues/280.
+		// Default empty (not a localhost issuer) so an unset issuer skips OIDC discovery
+		// and the explicit *URL endpoints are used as-is (split-horizon). See #280.
 		Issuer: firstNonEmpty(
 			os.Getenv("OIDC_ISSUER"),
 			viper.GetString("sso.oidc.issuer"),
+			"",
 		),
 		ClientId: firstNonEmpty(
 			os.Getenv("OIDC_CLIENT_ID"),
