@@ -168,8 +168,15 @@ config:
   # sso:
   #   oidc:
   #     enabled: true
+  #     # Identity provider issuer. When set, Crossview runs OIDC discovery
+  #     # (<issuer>/.well-known/openid-configuration) and the discovered endpoints
+  #     # OVERRIDE the explicit *URL values below. Leave issuer empty ("") to skip
+  #     # discovery and use authorizationURL/tokenURL/userInfoURL verbatim — required
+  #     # for split-horizon (public authorizationURL for the browser + in-cluster
+  #     # tokenURL/userInfoURL). See https://github.com/crossplane-contrib/crossview/issues/280.
   #     issuer: http://localhost:8080/realms/crossview
   #     clientId: crossview-client
+  #     # Used verbatim when issuer is empty; otherwise only a fallback if discovery fails.
   #     authorizationURL: ""
   #     tokenURL: ""
   #     userInfoURL: ""

@@ -72,7 +72,27 @@ sso:
 3. **Copy the client ID and secret** to your config
 4. **Use the issuer URL** (usually ends with `/realms/...` or `/oauth2/...`)
 
-The implementation supports **OIDC Discovery** - if you provide the `issuer` URL, it will automatically discover the authorization, token, and userinfo endpoints.
+The implementation supports **OIDC Discovery** - if you provide the `issuer` URL, it will automatically discover the authorization, token, and userinfo endpoints. The discovered endpoints take precedence over any explicit `authorizationURL`/`tokenURL`/`userInfoURL` you set.
+
+### Split-horizon endpoints (public authorize + in-cluster token)
+
+Leave `issuer` empty to **skip discovery** and use the explicit `authorizationURL`, `tokenURL`, and `userInfoURL` exactly as written. This is required when the identity provider is reachable at different URLs from the browser and from inside the cluster — a public `authorizationURL` for the user's browser redirect, plus in-cluster `tokenURL`/`userInfoURL` for the server-side code→token exchange and userinfo lookup:
+
+```yaml
+sso:
+  enabled: true
+  oidc:
+    enabled: true
+    issuer: ""                                                   # empty -> discovery skipped
+    authorizationURL: https://idp.example.com/authorize          # browser-reachable
+    tokenURL: http://idp.idp.svc.cluster.local:5556/token        # in-cluster
+    userInfoURL: http://idp.idp.svc.cluster.local:5556/userinfo  # in-cluster
+    clientId: your-client-id
+    clientSecret: your-client-secret
+    callbackURL: https://crossview.example.com/api/auth/oidc/callback
+```
+
+Because a non-empty `issuer` makes discovery override the explicit endpoints, split-horizon setups must leave `issuer` empty.
 
 ## SAML Configuration
 
