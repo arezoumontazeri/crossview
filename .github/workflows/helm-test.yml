@@ -26,10 +26,12 @@ jobs:
           version: '3.13.0'
 
       - name: Install Helm unittest plugin
-        # Maintained plugin (the deprecated quintush/helm-unittest fork no longer ships its `untt`
-        # binary, so its install silently failed -> "fork/exec .../untt: no such file or directory").
-        # Pin to a release: an unpinned install checks out main HEAD, whose plugin.yaml uses a
-        # `platformHooks` field that Helm 3.13 can't parse. No `|| true` — fail loudly on install.
+        # Switched off the deprecated quintush/helm-unittest fork (no longer ships its `untt` binary
+        # -> install silently failed -> "fork/exec .../untt: no such file or directory").
+        # v1.0.1 is the latest helm-unittest release that works on this workflow's Helm 3.13.0;
+        # v1.1.1+ (and an unpinned install, which takes the plugin's main HEAD) use a `platformHooks`
+        # plugin.yaml field Helm 3.13 can't parse, so bumping the plugin past v1.0.1 also requires
+        # bumping `azure/setup-helm` above to a newer Helm. No `|| true` — fail loudly on install.
         run: helm plugin install https://github.com/helm-unittest/helm-unittest.git --version v1.0.1
 
       - name: Run Helm Lint
