@@ -26,9 +26,11 @@ jobs:
           version: '3.13.0'
 
       - name: Install Helm unittest plugin
-        run: |
-          helm plugin install https://github.com/quintush/helm-unittest.git || true
-          helm plugin update unittest || true
+        # Maintained plugin (the deprecated quintush/helm-unittest fork no longer ships its `untt`
+        # binary, so its install silently failed -> "fork/exec .../untt: no such file or directory").
+        # Pin to a release: an unpinned install checks out main HEAD, whose plugin.yaml uses a
+        # `platformHooks` field that Helm 3.13 can't parse. No `|| true` — fail loudly on install.
+        run: helm plugin install https://github.com/helm-unittest/helm-unittest.git --version v1.0.1
 
       - name: Run Helm Lint
         run: |
