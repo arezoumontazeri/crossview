@@ -142,3 +142,45 @@ tests:
           path: data.OIDC_CLIENT_ID
           value: "my-client"
 
+  - it: should render an empty OIDC_ISSUER when issuer is not set (skips discovery)
+    set:
+      config:
+        sso:
+          enabled: true
+          oidc:
+            enabled: true
+      secrets:
+        dbPassword: test-password
+        sessionSecret: test-secret
+    asserts:
+      - equal:
+          path: data.OIDC_ISSUER
+          value: ""
+
+  - it: should keep explicit OIDC endpoints for split-horizon when issuer is empty
+    set:
+      config:
+        sso:
+          enabled: true
+          oidc:
+            enabled: true
+            authorizationURL: https://idp.example.com/auth
+            tokenURL: http://idp.idp.svc.cluster.local:5556/token
+            userInfoURL: http://idp.idp.svc.cluster.local:5556/userinfo
+      secrets:
+        dbPassword: test-password
+        sessionSecret: test-secret
+    asserts:
+      - equal:
+          path: data.OIDC_ISSUER
+          value: ""
+      - equal:
+          path: data.OIDC_AUTHORIZATION_URL
+          value: "https://idp.example.com/auth"
+      - equal:
+          path: data.OIDC_TOKEN_URL
+          value: "http://idp.idp.svc.cluster.local:5556/token"
+      - equal:
+          path: data.OIDC_USERINFO_URL
+          value: "http://idp.idp.svc.cluster.local:5556/userinfo"
+

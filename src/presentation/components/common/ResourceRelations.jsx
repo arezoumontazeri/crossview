@@ -1,4 +1,4 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Text, Badge } from '@chakra-ui/react';
 import { useMemo, useEffect } from 'react';
 import { getResourceHealth, getHealthColor, getNodeBorderColor } from './ResourceRelations/utils.js';
 import { Legend } from './ResourceRelations/Legend.jsx';
@@ -31,15 +31,13 @@ export const ResourceRelations = ({ resource, relatedResources, colorMode, onNav
       position: { x: 400, y: 300 },
       data: {
         label: (
-          <Box textAlign="center" p={2}>
-            <Text fontWeight="bold" fontSize="sm" color={getTextColor(colorMode, 'primary')}>
+          <Box px={3} py={2} textAlign="center">
+            <Text fontWeight="bold" fontSize="sm" color={getTextColor(colorMode, 'primary')} noOfLines={1} mb={1}>
               {resource.kind || 'Resource'}
             </Text>
-
-            <Text fontSize="xs" color={getTextColor(colorMode, 'secondary')} mt={1}>
+            <Text fontSize="xs" color={getTextColor(colorMode, 'secondary')} noOfLines={1}>
               {resource.name}
             </Text>
-
             {resource.namespace && resource.namespace !== 'default' && (
               <Text fontSize="xs" color={getTextColor(colorMode, 'muted')} mt={1}>
                 ns: {resource.namespace}
@@ -53,7 +51,7 @@ export const ResourceRelations = ({ resource, relatedResources, colorMode, onNav
         border: `2px solid ${getNodeBorderColor(mainHealth, colorMode)}`,
         borderRadius: '8px',
         padding: 0,
-        minWidth: '150px',
+        minWidth: '180px',
         boxSizing: 'border-box',
       },
     };
@@ -73,25 +71,28 @@ export const ResourceRelations = ({ resource, relatedResources, colorMode, onNav
         position: { x, y },
         data: {
           label: (
-            <Box textAlign="center" p={2}>
-              <Text
-                fontWeight="semibold"
-                fontSize="xs"
-                color={getTextColor(colorMode, 'primary')}
-              >
+            <Box px={3} py={2} textAlign="center">
+              <Text fontWeight="bold" fontSize="sm" color={getTextColor(colorMode, 'primary')} noOfLines={1} mb={1}>
                 {related.type || related.kind}
               </Text>
-
-              <Text
-                fontSize="xs"
-                color={getTextColor(colorMode, 'secondary')}
-                mt={1}
-                maxW="120px"
-                noOfLines={1}
-              >
+              {related.kind && (
+                <Badge
+                  fontSize="xs"
+                  colorScheme="blue"
+                  variant="outline"
+                  borderWidth="1px"
+                  opacity={0.7}
+                  textTransform="none"
+                  whiteSpace="normal"
+                  display="inline-block"
+                  mb={1}
+                >
+                  {related.kind}
+                </Badge>
+              )}
+              <Text fontSize="xs" color={getTextColor(colorMode, 'secondary')} noOfLines={1}>
                 {related.name}
               </Text>
-
               {related.namespace && related.namespace !== 'default' && (
                 <Text fontSize="xs" color={getTextColor(colorMode, 'muted')} mt={1}>
                   ns: {related.namespace}
@@ -105,18 +106,17 @@ export const ResourceRelations = ({ resource, relatedResources, colorMode, onNav
           border: `2px solid ${getNodeBorderColor(health, colorMode)}`,
           borderRadius: '8px',
           padding: 0,
-          minWidth: '120px',
+          minWidth: '160px',
+          maxWidth: '300px',
           boxSizing: 'border-box',
         },
       };
     });
-
     return [mainNode, ...relatedNodes];
   }, [resource, relatedResources, colorMode]);
 
   const initialEdges = useMemo(() => {
     if (!resource) return [];
-
     return initialNodes
       .filter((n) => n.id !== 'main-resource')
       .map((node, index) => ({
@@ -164,33 +164,18 @@ export const ResourceRelations = ({ resource, relatedResources, colorMode, onNav
             data: {
               ...node.data,
               label: (
-                <Box textAlign="center" p={2}>
-                  <Text
-                    fontWeight="bold"
-                    fontSize="sm"
-                    color={getTextColor(colorMode, 'primary')}
-                  >
+                <Box px={3} py={2} textAlign="center">
+                  <Text fontWeight="bold" fontSize="sm" color={getTextColor(colorMode, 'primary')} noOfLines={1} mb={1}>
                     {resource?.kind || 'Resource'}
                   </Text>
-
-                  <Text
-                    fontSize="xs"
-                    color={getTextColor(colorMode, 'secondary')}
-                    mt={1}
-                  >
+                  <Text fontSize="xs" color={getTextColor(colorMode, 'secondary')} noOfLines={1}>
                     {resource?.name}
                   </Text>
-
-                  {resource?.namespace &&
-                    resource.namespace !== 'default' && (
-                      <Text
-                        fontSize="xs"
-                        color={getTextColor(colorMode, 'muted')}
-                        mt={1}
-                      >
-                        ns: {resource.namespace}
-                      </Text>
-                    )}
+                  {resource?.namespace && resource.namespace !== 'default' && (
+                    <Text fontSize="xs" color={getTextColor(colorMode, 'muted')} mt={1}>
+                      ns: {resource.namespace}
+                    </Text>
+                  )}
                 </Box>
               ),
             },
@@ -214,32 +199,31 @@ export const ResourceRelations = ({ resource, relatedResources, colorMode, onNav
           data: {
             ...node.data,
             label: (
-              <Box textAlign="center" p={2}>
-                <Text
-                  fontWeight="semibold"
-                  fontSize="xs"
-                  color={getTextColor(colorMode, 'primary')}
-                >
+              <Box px={3} py={2} textAlign="center">
+                <Text fontWeight="bold" fontSize="sm" color={getTextColor(colorMode, 'primary')} noOfLines={1} mb={1}>
                   {related.type || related.kind}
                 </Text>
-
-                <Text
-                  fontSize="xs"
-                  color={getTextColor(colorMode, 'secondary')}
-                  mt={1}
-                  maxW="120px"
-                  noOfLines={1}
-                >
+                {related.kind && (
+                  <Badge
+                    fontSize="xs"
+                    colorScheme="blue"
+                    variant="outline"
+                    borderWidth="1px"
+                    opacity={0.7}
+                    textTransform="none"
+                    whiteSpace="normal"
+                    display="inline-block"
+                    mb={1}
+                  >
+                    {related.kind}
+                  </Badge>
+                )}
+                <Text fontSize="xs" color={getTextColor(colorMode, 'secondary')} noOfLines={1}>
                   {related.name}
                 </Text>
-
                 {related.namespace &&
                   related.namespace !== 'default' && (
-                    <Text
-                      fontSize="xs"
-                      color={getTextColor(colorMode, 'muted')}
-                      mt={1}
-                    >
+                    <Text fontSize="xs" color={getTextColor(colorMode, 'muted')} mt={1}>
                       ns: {related.namespace}
                     </Text>
                   )}

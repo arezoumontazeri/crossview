@@ -17,6 +17,7 @@ import { CompositeResourceKind } from './pages/CompositeResourceKind.jsx';
 import { Search } from './pages/Search.jsx';
 import { useAppContext } from './providers/AppProvider.jsx';
 import { OnWatchResourcesProvider } from './providers/OnWatchResourcesProvider.jsx';
+import { ErrorBoundary } from './components/common/ErrorBoundary.jsx';
 import { Box, Text, VStack, Icon, Button } from '@chakra-ui/react';
 import { FiAlertCircle, FiRefreshCw } from 'react-icons/fi';
 
@@ -106,44 +107,46 @@ const PublicRoute = ({ children }) => {
 
 function App() {
   return (
-    <Routes>
-      <Route
-        path="/login"
-        element={
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/*"
-        element={
-          <ProtectedRoute>
-            <OnWatchResourcesProvider>
-            <Layout>
-              <Routes>
-                <Route index element={<Dashboard />} />
-                <Route path="providers" element={<Providers />} />
-                <Route path="functions" element={<Functions />} />
-                <Route path="compositions" element={<Compositions />} />
-                <Route path="xrds" element={<CompositeResourceDefinitions />} />
-                <Route path="mrds" element={<ManagedResourceDefinitions />} />
-                <Route path="mraps" element={<ManagedResourceActivationPolicies />} />
-                <Route path="composite-resources" element={<CompositeResources />} />
-                <Route path="composite-resources/:kind" element={<CompositeResourceKind />} />
-                <Route path="claims" element={<Claims />} />
-                <Route path="managed-resources" element={<Resources />} />
-                <Route path="resources" element={<Navigate to="/managed-resources" replace />} />
-                <Route path="resources/:kind" element={<ResourceKind />} />
-                <Route path="search" element={<Search />} />
-                <Route path="settings/*" element={<Settings />} />
-              </Routes>
-            </Layout>
-            </OnWatchResourcesProvider>
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+    <ErrorBoundary>
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/*"
+          element={
+            <ProtectedRoute>
+              <OnWatchResourcesProvider>
+              <Layout>
+                <Routes>
+                  <Route index element={<Dashboard />} />
+                  <Route path="providers" element={<Providers />} />
+                  <Route path="functions" element={<Functions />} />
+                  <Route path="compositions" element={<Compositions />} />
+                  <Route path="xrds" element={<CompositeResourceDefinitions />} />
+                  <Route path="mrds" element={<ManagedResourceDefinitions />} />
+                  <Route path="mraps" element={<ManagedResourceActivationPolicies />} />
+                  <Route path="composite-resources" element={<CompositeResources />} />
+                  <Route path="composite-resources/:kind" element={<CompositeResourceKind />} />
+                  <Route path="claims" element={<Claims />} />
+                  <Route path="managed-resources" element={<Resources />} />
+                  <Route path="resources" element={<Navigate to="/managed-resources" replace />} />
+                  <Route path="resources/:kind" element={<ResourceKind />} />
+                  <Route path="search" element={<Search />} />
+                  <Route path="settings/*" element={<Settings />} />
+                </Routes>
+              </Layout>
+              </OnWatchResourcesProvider>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </ErrorBoundary>
   );
 }
 

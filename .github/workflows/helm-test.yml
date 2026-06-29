@@ -26,9 +26,8 @@ jobs:
           version: '3.13.0'
 
       - name: Install Helm unittest plugin
-        run: |
-          helm plugin install https://github.com/quintush/helm-unittest.git || true
-          helm plugin update unittest || true
+        # v1.0.1 is the latest helm-unittest release compatible with Helm 3.13 (v1.1.1+ need a newer Helm).
+        run: helm plugin install https://github.com/helm-unittest/helm-unittest.git --version v1.0.1
 
       - name: Run Helm Lint
         run: |
