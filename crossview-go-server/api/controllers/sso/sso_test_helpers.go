@@ -73,7 +73,7 @@ func TestSSOConfig_OIDC_Enabled(t *testing.T) {
 	assert.True(t, cfg.Enabled)
 	assert.True(t, cfg.OIDC.Enabled)
 	assert.False(t, cfg.SAML.Enabled)
-	assert.Equal(t, "http://localhost:8080/realms/crossview", cfg.OIDC.Issuer)
+	assert.Empty(t, cfg.OIDC.Issuer)
 	assert.Equal(t, "crossview-client", cfg.OIDC.ClientId)
 	assert.Equal(t, "openid profile email", cfg.OIDC.Scope)
 }

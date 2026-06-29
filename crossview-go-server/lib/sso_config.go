@@ -69,7 +69,7 @@ func getOIDCConfig(enabledStr string) OIDCConfig {
 		Issuer: firstNonEmpty(
 			os.Getenv("OIDC_ISSUER"),
 			viper.GetString("sso.oidc.issuer"),
-			"http://localhost:8080/realms/crossview",
+			"",
 		),
 		ClientId: firstNonEmpty(
 			os.Getenv("OIDC_CLIENT_ID"),

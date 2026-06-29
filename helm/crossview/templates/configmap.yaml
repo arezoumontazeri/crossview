@@ -30,7 +30,7 @@ data:
   LOG_LEVEL: {{ .Values.config.server.log.level | default "info" | quote }}
   CORS_ORIGIN: {{ .Values.config.server.cors.origin | default "http://localhost:5173" | quote }}
   OIDC_ENABLED: {{ .Values.config.sso.oidc.enabled | default false | quote }}
-  OIDC_ISSUER: {{ .Values.config.sso.oidc.issuer | default "http://localhost:8080/realms/crossview" | quote }}
+  OIDC_ISSUER: {{ .Values.config.sso.oidc.issuer | default "" | quote }}
   OIDC_CLIENT_ID: {{ .Values.config.sso.oidc.clientId | default "crossview-client" | quote }}
   OIDC_AUTHORIZATION_URL: {{ .Values.config.sso.oidc.authorizationURL | default "" | quote }}
   OIDC_TOKEN_URL: {{ .Values.config.sso.oidc.tokenURL | default "" | quote }}

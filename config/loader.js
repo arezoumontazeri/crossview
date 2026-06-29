@@ -76,7 +76,7 @@ export const loadConfig = (configPath = null) => {
       enabled: process.env.SSO_ENABLED === 'true' || fileConfig.sso?.enabled === true,
       oidc: {
         enabled: process.env.OIDC_ENABLED === 'true' || fileConfig.sso?.oidc?.enabled === true,
-        issuer: process.env.OIDC_ISSUER || fileConfig.sso?.oidc?.issuer || 'http://localhost:8080/realms/crossview',
+        issuer: process.env.OIDC_ISSUER || fileConfig.sso?.oidc?.issuer || '',
         clientId: process.env.OIDC_CLIENT_ID || fileConfig.sso?.oidc?.clientId || 'crossview-client',
         clientSecret: process.env.OIDC_CLIENT_SECRET || fileConfig.sso?.oidc?.clientSecret || '',
         authorizationURL: process.env.OIDC_AUTHORIZATION_URL || fileConfig.sso?.oidc?.authorizationURL || '',
