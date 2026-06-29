@@ -73,8 +73,6 @@ func TestSSOConfig_OIDC_Enabled(t *testing.T) {
 	assert.True(t, cfg.Enabled)
 	assert.True(t, cfg.OIDC.Enabled)
 	assert.False(t, cfg.SAML.Enabled)
-	// Issuer stays empty when unset so OIDC discovery is skipped and the explicit
-	// endpoints are used as-is (split-horizon support). See issue #280.
 	assert.Empty(t, cfg.OIDC.Issuer)
 	assert.Equal(t, "crossview-client", cfg.OIDC.ClientId)
 	assert.Equal(t, "openid profile email", cfg.OIDC.Scope)
